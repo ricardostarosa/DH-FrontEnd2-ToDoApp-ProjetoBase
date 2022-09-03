@@ -1,0 +1,24 @@
+{
+  "name": "dh-frontend2-todoapp-projetobase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ricardostarosa/DH-FrontEnd2-ToDoApp-ProjetoBase.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ricardostarosa/DH-FrontEnd2-ToDoApp-ProjetoBase/issues"
+  },
+  "homepage": "https://github.com/ricardostarosa/DH-FrontEnd2-ToDoApp-ProjetoBase#readme",
+  "devDependencies": {
+    "jest": "^29.0.1"
+  },
+  "type": "module"
+}
