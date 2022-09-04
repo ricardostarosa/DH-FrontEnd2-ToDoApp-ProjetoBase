@@ -1,53 +1,62 @@
-import Login from "../teste_codigo/LoginModel.js";
+import Login from "../Model/LoginModel.js";
 import Valida from "../Validacoes/Normalizacao.js";
+import LoginView from "../View/LoginView.js";
+import Helper from "../Helper/Helper.js";
 
 class LoginController {
   constructor() {
     const botao = document.querySelector("button");
 
     const email = document.querySelector("#inputEmail");
+
     const senha = document.querySelector("#inputPassword");
 
     this.isFieldsValid = [false, false];
-    this.login = new Login();
 
-    email.addEventListener("keyup", (evento) => {
+    this.login = new Login();
+    this.loginView = new LoginView();
+
+    Helper.listener(email)("keyup", (evento) => {
       evento.preventDefault();
 
-      const checaEmail = Valida.isEmailValid(evento.target.value);
+      const objValidacao = {
+        checaEmail: evento.target.value,
+      };
 
-      if (checaEmail) this.login.insereEmail(evento.target.value);
-      else this.login.insereEmail("");
+      this.loginView.mostraMensagemErro(
+        objValidacao,
+        evento.target.nextSibling
+      );
 
-      this.changeListValidate(checaEmail, 0);
+      this.changeListValidate(Valida.isEmailValid(evento.target.value), 0);
 
       this.releaseButton(Valida.isButtonLock(this.isFieldsValid), botao);
 
-      console.log(this.login);
+      console.log(this.isFieldsValid);
     });
 
-    senha.addEventListener("keyup", (evento) => {
+    Helper.listener(senha)("keyup", (evento) => {
       evento.preventDefault();
 
-      const checaSenha = Valida.isPasswordValid(evento.target.value);
+      const objValidacao = {
+        checaSenha: evento.target.value,
+      };
 
-      if (checaSenha) this.login.insereSenha(evento.target.value);
-      else this.login.insereSenha("");
+      this.loginView.mostraMensagemErro(
+        objValidacao,
+        evento.target.nextSibling
+      );
 
-      this.changeListValidate(checaSenha, 1);
+      this.changeListValidate(Valida.isPasswordValid(evento.target.value), 1);
 
       this.releaseButton(Valida.isButtonLock(this.isFieldsValid), botao);
 
-      console.log(this.login);
+      console.log(this.isFieldsValid);
     });
   }
 
   changeListValidate(valida, index) {
-    if (valida) {
-      this.isFieldsValid[index] = true;
-    } else {
-      this.isFieldsValid[index] = false;
-    }
+    this.isFieldsValid[index] = valida;
   }
 
   releaseButton(validate, tagElement) {
