@@ -1,6 +1,6 @@
 import Valida from "../Validacoes/Normalizacao.js";
 
-class LoginView {
+class CadastroView {
   constructor() {
     // this.mensagemEmail = document.querySelector("#mensagemEmail");
   }
@@ -14,4 +14,4 @@ class LoginView {
   }
 }
 
-export default LoginView;
+export default CadastroView;

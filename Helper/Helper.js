@@ -2,6 +2,18 @@ class Helper {
   static listener(elemento) {
     return elemento.addEventListener.bind(elemento);
   }
+
+  static get selector() {
+    return document.querySelector.bind(document);
+  }
+
+  static get selectorAll() {
+    return document.querySelectorAll.bind(document);
+  }
+
+  static get getId() {
+    return document.getElementById.bind(document);
+  }
 }
 
 export default Helper;

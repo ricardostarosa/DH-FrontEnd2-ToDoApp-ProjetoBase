@@ -1,8 +1,14 @@
-// To check a password between 7 to 15 characters which contain at least one numeric digit and a special character
-
 class Valida {
   static getRidOfSpaces(texto) {
     return texto.trim();
+  }
+
+  static isNameValid(nome) {
+    return /^[a-z]{3,30}$/gi.test(nome);
+  }
+
+  static isSurnameValid(nome) {
+    return /^(?! )[a-z ]{3,30}$/gi.test(nome);
   }
 
   static isEmpty(texto) {
@@ -23,8 +29,24 @@ class Valida {
     );
   }
 
+  static isDataSame({ data1, data2 }) {
+    return data1 === data2;
+  }
+
   static mensagemErro(objValidacao) {
     const erros = [
+      {
+        tipo: "checaNome",
+        valido: this.isNameValid,
+        mensagem: "O nome de ter somente letras e no mínimo 3 caracteres.",
+      },
+
+      {
+        tipo: "checaSobrenome",
+        valido: this.isSurnameValid,
+        mensagem:
+          "O sobrenome de ter somente letras e no mínimo 3 e no máximo 30 caracteres.",
+      },
       {
         tipo: "checaEmail",
         valido: this.isEmailValid,
@@ -37,12 +59,18 @@ class Valida {
         mensagem:
           "A senha de ter entre 7 e 15 caracteres com pelo menos uma letra ou caractere especial.",
       },
+
+      {
+        tipo: "checaRepetirSenha",
+        valido: this.isDataSame,
+        mensagem: 'Digite a mesma senha digitada no campo "Senha".',
+      },
     ];
 
     return erros.filter((item) => {
       const { tipo } = item;
 
-      if (!objValidacao[tipo]) return false;
+      if (!(tipo in objValidacao)) return false;
 
       return !item.valido(objValidacao[tipo]);
     });

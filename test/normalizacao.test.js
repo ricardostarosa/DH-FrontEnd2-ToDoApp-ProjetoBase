@@ -1,5 +1,21 @@
 import Valida from "../Validacoes/Normalizacao.js";
 
+it("campo nome dever conter somente letras de no mínimo 3 caracteres", () => {
+  const nome = [" teste", "Ricardo", "Ricar4"];
+
+  expect(Valida.isNameValid(nome[0])).toBe(true);
+  expect(Valida.isNameValid(nome[1])).toBe(true);
+  expect(Valida.isNameValid(nome[2])).toBe(false);
+});
+
+it("campo sobrenome dever conter somente letras de no mínimo 3 caracteres", () => {
+  const nome = [" da silva", "dos Santos", "da Silva "];
+
+  expect(Valida.isSurnameValid(nome[0])).toBe(true);
+  expect(Valida.isSurnameValid(nome[1])).toBe(true);
+  expect(Valida.isSurnameValid(nome[2])).toBe(true);
+});
+
 it("campo deve ser normalizado (ex: retirar espaços desnecessários)", () => {
   const caractere = Valida.getRidOfSpaces("teste");
 
@@ -52,4 +68,13 @@ it("To check a password between 7 to 15 characters which contain at least one nu
 
   expect(Valida.isPasswordValid(password[2])).toBe(false);
   expect(Valida.isPasswordValid(password[3])).toBe(false);
+});
+
+it("Checa se os dados são iguais", () => {
+  const [dado1, dado2] = ["teste", "teste"];
+  const [item1, item2] = ["teste", "dado"];
+
+  expect(Valida.isDataSame(dado1, dado2)).toBe(true);
+
+  expect(Valida.isDataSame(item1, item2)).not.toBe(true);
 });

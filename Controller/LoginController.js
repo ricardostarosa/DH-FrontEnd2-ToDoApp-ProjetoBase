@@ -5,11 +5,11 @@ import Helper from "../Helper/Helper.js";
 
 class LoginController {
   constructor() {
-    const botao = document.querySelector("button");
+    const botao = Helper.selector("button");
 
-    const email = document.querySelector("#inputEmail");
+    const email = Helper.selector("#inputEmail");
 
-    const senha = document.querySelector("#inputPassword");
+    const senha = Helper.selector("#inputPassword");
 
     this.isFieldsValid = [false, false];
 
@@ -25,7 +25,7 @@ class LoginController {
 
       this.loginView.mostraMensagemErro(
         objValidacao,
-        evento.target.nextSibling
+        evento.target.nextElementSibling
       );
 
       this.changeListValidate(Valida.isEmailValid(evento.target.value), 0);

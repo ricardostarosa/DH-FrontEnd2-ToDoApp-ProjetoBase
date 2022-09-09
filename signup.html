@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="styles/acesso.css">
 
   <!-- ---------------------- lógica aplicada no registro -------------------- -->
-  <script src="/scripts/utils.js"></script>
-  <script src="/scripts/signup.js"></script>
+
+  <script type="module" src="/Controller/CadastroController.js"></script>
 
 </head>
 
@@ -29,23 +29,28 @@
 
       <label>
         Nome:
-        <input type="text">
+        <input id="nome" type="text">
+        <small></small>
       </label>
       <label>
         Sobrenome:
-        <input type="text">
+        <input id="sobrenome" type="text">
+        <small></small>
       </label>
       <label>
         Email:
-        <input type="email">
+        <input id="email" type="email">
+        <small id="mensagemEmail"></small>
       </label>
       <label>
         Senha:
-        <input type="password">
+        <input id="senha" type="password">
+        <small></small>
       </label>
       <label>
         Repetir senha:
-        <input type="password">
+        <input id="repetirSenha" type="password">
+        <small></small>
       </label>
 
       <button>Criar conta</button>
