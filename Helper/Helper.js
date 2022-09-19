@@ -1,4 +1,4 @@
-class Helper {
+class DOM {
   static listener(elemento) {
     return elemento.addEventListener.bind(elemento);
   }
@@ -16,4 +16,4 @@ class Helper {
   }
 }
 
-export default Helper;
+export default DOM;

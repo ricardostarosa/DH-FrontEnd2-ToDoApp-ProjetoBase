@@ -1,25 +1,29 @@
 import Cadastro from "../Model/CadastroModel.js";
 import Valida from "../Validacoes/Normalizacao.js";
 import CadastroView from "../View/CadastroWiew.js";
-import Helper from "../Helper/Helper.js";
+import DOM from "../Helper/Helper.js";
+import CadastroRepo from "../Repo/CadastroRepo.js";
+import StorageCadastro from "../Helper/StorageCadastro.js";
 
 class LoginController {
   constructor() {
-    this.input = Helper.selectorAll("input");
-    this.botao = Helper.selector("button");
+    this.input = DOM.selectorAll("input");
+    this.botao = DOM.selector("button");
 
-    this.nome = Helper.selector("#nome");
-    this.sobrenome = Helper.selector("#sobrenome");
-    this.email = Helper.selector("#email");
-    this.senha = Helper.selector("#senha");
-    this.repetirSenha = Helper.selector("#repetirSenha");
+    this.form = DOM.selector("form");
+
+    this.nome = DOM.selector("#nome");
+    this.sobrenome = DOM.selector("#sobrenome");
+    this.email = DOM.selector("#email");
+    this.senha = DOM.selector("#senha");
+    this.repetirSenha = DOM.selector("#repetirSenha");
 
     this.isFieldsValid = [false, false, false, false, false];
 
     this.cadastro = new Cadastro();
     this.cadastroView = new CadastroView();
 
-    Helper.listener(this.nome)("keyup", (evento) => {
+    DOM.listener(this.nome)("keyup", (evento) => {
       evento.preventDefault();
 
       const objValidacao = {
@@ -39,7 +43,7 @@ class LoginController {
         this.cadastro.insereNome(evento.target.value);
     });
 
-    Helper.listener(this.sobrenome)("keyup", (evento) => {
+    DOM.listener(this.sobrenome)("keyup", (evento) => {
       evento.preventDefault();
 
       const objValidacao = {
@@ -59,7 +63,7 @@ class LoginController {
         this.cadastro.insereSobrenome(evento.target.value);
     });
 
-    Helper.listener(this.email)("keyup", (evento) => {
+    DOM.listener(this.email)("keyup", (evento) => {
       evento.preventDefault();
 
       const objValidacao = {
@@ -79,7 +83,7 @@ class LoginController {
         this.cadastro.insereEmail(evento.target.value);
     });
 
-    Helper.listener(this.senha)("keyup", (evento) => {
+    DOM.listener(this.senha)("keyup", (evento) => {
       evento.preventDefault();
 
       const objValidacao = {
@@ -102,7 +106,7 @@ class LoginController {
         this.cadastro.insereSenha(evento.target.value);
     });
 
-    Helper.listener(this.repetirSenha)("keyup", (evento) => {
+    DOM.listener(this.repetirSenha)("keyup", (evento) => {
       evento.preventDefault();
 
       const objValidacao = {
@@ -136,12 +140,44 @@ class LoginController {
         this.cadastro.insereRepetirSenha(evento.target.value);
     });
 
-    Helper.listener(this.botao)("click", (evento) => {
+    DOM.listener(this.form)("click", (evento) => {
+      DOM.selector(".right").children[0].textContent = "";
+    });
+
+    DOM.listener(this.botao)("click", (evento) => {
       evento.preventDefault();
+      evento.stopPropagation();
 
-      console.log("clicou");
+      const elementos = evento.target.parentNode.elements;
 
-      console.log(this.cadastro.lista);
+      const dadosUsuario = {
+        firstName: elementos.nome.value,
+        lastName: elementos.sobrenome.value,
+        email: elementos.email.value,
+        password: elementos.senha.value,
+      };
+
+      CadastroRepo.criarUsuario(dadosUsuario)
+        .then((data) => {
+          if (data.status === 400) {
+            throw new Error("Usuário já existe na base de dados!");
+          } else if (data.status === 500) {
+            throw new Error("Erro no servidor");
+          }
+
+          return data.json();
+        })
+        .then((data) => {
+          StorageCadastro.saveLocal(data, dadosUsuario.email);
+
+          console.log(data);
+        })
+        .catch((e) => {
+          DOM.selector(".right").children[0].textContent = e.message;
+
+          this.email.focus();
+          console.log("erro", e.message);
+        });
     });
   }
 
