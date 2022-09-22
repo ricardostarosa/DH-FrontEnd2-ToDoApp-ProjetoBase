@@ -11,8 +11,12 @@ class DOM {
     return document.querySelectorAll.bind(document);
   }
 
-  static get getId() {
+  static get id() {
     return document.getElementById.bind(document);
+  }
+
+  static get class() {
+    return document.getElementsByClassName.bind(document);
   }
 }
 

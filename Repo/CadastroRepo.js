@@ -1,7 +1,3 @@
-const RECURSOS = {
-  users: "https://ctd-todo-api.herokuapp.com/v1/users",
-};
-
 class CadastroRepo {
   static criarUsuario({ firstName, lastName, email, password }) {
     const obj = { firstName, lastName, email, password };

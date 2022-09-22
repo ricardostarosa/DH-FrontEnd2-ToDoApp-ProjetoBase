@@ -2,9 +2,13 @@ const INDEX = "jwt-login";
 
 class PegaJWT {
   static getAutorizacaoLogin() {
-    const retorno = JSON.parse(localStorage.getItem(INDEX))[0];
+    const retorno = JSON.parse(localStorage.getItem(INDEX)) || [];
     console.log(retorno);
-    return retorno.jwt;
+    return retorno[0]?.jwt;
+  }
+
+  static limpaJWT() {
+    localStorage.removeItem(INDEX);
   }
 }
 
