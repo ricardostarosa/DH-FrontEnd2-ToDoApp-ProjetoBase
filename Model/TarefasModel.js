@@ -10,7 +10,7 @@ class Tarefas {
   insereTarefas(lista) {
     this.listaTarefas = lista;
 
-    // this.verificaStorage();
+    this.verificaStorage();
 
     // if (listaTarefas) {
     //   this.listaTarefas = listaTarefas;
