@@ -19,12 +19,27 @@ class TarefasController {
     this.form = DOM.selector(".nova-tarefa");
 
     this.divTarefasTerminadas = DOM.class("tarefas-terminadas")[0];
-
-    this.tarefasModel = new Tarefas();
-
     this.botaoFinaliza = DOM.selector;
 
     this.tarefaFinalizada = DOM.class("tarefas-terminadas")[0];
+
+    this.tarefasModel = new Proxy(new Tarefas(), {
+      get(target, props, receiver) {
+        console.log("intercepta tarefas", target[props]);
+
+        if (props === "insereTarefas" && typeof target[props] === "function") {
+          return function () {
+            console.log(props);
+
+            Reflect.apply(target[props], target, arguments);
+
+            console.log("intercepta insereTarefas", target[props]);
+          };
+        }
+
+        return Reflect.get(target, props, receiver);
+      },
+    });
 
     const usuarioJWT = PegaJWT.getAutorizacaoLogin();
 

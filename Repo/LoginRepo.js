@@ -3,13 +3,6 @@ const RECURSOS = {
 };
 
 class LoginRepo {
-  // constructor() {
-  //   const usuario = {
-  //     email: "ricardo2@gmail.com.br",
-  //     password: "123456",
-  //   };
-  // }
-
   static loginUsuario({ email, password }) {
     const obj = { email, password };
 
