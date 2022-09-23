@@ -23,6 +23,8 @@ class TarefasController {
 
     this.tarefaFinalizada = DOM.class("tarefas-terminadas")[0];
 
+    const self = this;
+
     this.tarefasModel = new Proxy(new Tarefas(), {
       get(target, props, receiver) {
         console.log("intercepta tarefas", target[props]);
@@ -32,6 +34,13 @@ class TarefasController {
             console.log(props);
 
             Reflect.apply(target[props], target, arguments);
+
+            TarefaView.insereTarefaFinalizada(
+              self.ordenaTarefa(target.tarefas),
+              self.tarefaFinalizada
+            );
+
+            TarefaView.montaTarefa(target.tarefas, self.ulTarefasPendentes);
 
             console.log("intercepta insereTarefas", target[props]);
           };
@@ -84,21 +93,15 @@ class TarefasController {
       if (isClicked) {
         console.log(e.target.parentElement);
 
-        // implementar o repositorio atualiza aqui
-
         Repository.pegarTasks(usuarioJWT)
           .then((data) => data.json())
           .then((data) => {
-            console.log("pega tarefa", data);
-            console.log("tarefa dom", this.tarefaFinalizada);
-
-            console.log("atualiza", itemAtualiza);
             this.tarefasModel.insereTarefas(data);
 
-            TarefaView.insereTarefaFinalizada(
-              this.ordenaTarefa(this.tarefasModel.tarefas),
-              this.tarefaFinalizada
-            );
+            // TarefaView.insereTarefaFinalizada(
+            //   this.ordenaTarefa(this.tarefasModel.tarefas),
+            //   this.tarefaFinalizada
+            // );
 
             location.reload(true);
           });
@@ -148,11 +151,6 @@ class TarefasController {
         .then((data) => data.json())
         .then((data) => {
           this.tarefasModel.insereTarefas(data);
-          TarefaView.montaTarefa(
-            this.tarefasModel.tarefas,
-            this.ulTarefasPendentes
-          );
-          console.log("pega tarefa", this.tarefasModel.tarefas);
         });
     });
   }
@@ -163,21 +161,6 @@ class TarefasController {
   }
 
   finalizaTarefa(id) {
-    // lista
-    //   .filter((item) => !item.completed)
-    //   .forEach((item) => {
-    //     tarefas += `<li class="tarefa" data-id="${item.id}">
-    //        <div class="not-done"></div>
-    //        <div class="descricao">
-    //          <p class="nome">${item.description}</p>
-    //          <p class="timestamp">Criada em: ${FormataDados.data(
-    //            item.createdAt
-    //          )}</p>
-    //        </div>
-    //        <div>
-    //         </div>
-    //       </li>`;
-    //   });
     document
       .querySelector(".tarefas-terminadas")
       .appendChild(document.querySelector(`[data-id="${id}"]`));
