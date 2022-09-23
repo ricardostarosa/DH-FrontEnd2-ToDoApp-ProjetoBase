@@ -1,5 +1,5 @@
 const RECURSOS = {
-  users: "https://ctd-todo-api.herokuapp.com/v1/users/getMe",
+  users: "https://ctd-fe2-todo-v2.herokuapp.com/v1/users/getMe",
 };
 
 class GetUsuario {

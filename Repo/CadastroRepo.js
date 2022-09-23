@@ -1,3 +1,7 @@
+const RECURSOS = {
+  users: "https://ctd-fe2-todo-v2.herokuapp.com/v1/users",
+};
+
 class CadastroRepo {
   static criarUsuario({ firstName, lastName, email, password }) {
     const obj = { firstName, lastName, email, password };

@@ -1,4 +1,4 @@
-const BASE_URL = "https://ctd-todo-api.herokuapp.com/v1";
+const BASE_URL = "https://ctd-fe2-todo-v2.herokuapp.com/v1";
 
 const RECURSOS = {
   users: `${BASE_URL}/users`,

@@ -1,5 +1,3 @@
-import Repository from "../Repo/Repository.js";
-
 class Tarefas {
   constructor() {
     this.listaTarefas = [];
@@ -11,7 +9,8 @@ class Tarefas {
 
   insereTarefas(lista) {
     this.listaTarefas = lista;
-    // const listaTarefas = JSON.parse(localStorage.getItem("lista-tarefas"));
+
+    // this.verificaStorage();
 
     // if (listaTarefas) {
     //   this.listaTarefas = listaTarefas;
@@ -19,6 +18,10 @@ class Tarefas {
     // } else {
     //   this.atualizaLocalStorage("lista-tarefas", lista);
     // }
+  }
+
+  verificaStorage() {
+    return JSON.parse(localStorage.getItem("lista-tarefas"));
   }
   atualizaLocalStorage(id, lista) {
     localStorage.setItem(id, JSON.stringify(lista));
