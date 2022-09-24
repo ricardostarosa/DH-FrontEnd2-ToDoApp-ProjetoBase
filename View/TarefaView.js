@@ -20,8 +20,6 @@ class TarefaView {
           </li>`;
       });
 
-    console.log("TAREFA VIEW", tarefas);
-
     elemento.innerHTML = tarefas;
   }
 
@@ -47,8 +45,6 @@ class TarefaView {
             </div>
           </li>`;
       });
-
-    console.log("TAREFA VIEW TERMINADAS", tarefas);
 
     elemento.innerHTML = tarefas;
   }

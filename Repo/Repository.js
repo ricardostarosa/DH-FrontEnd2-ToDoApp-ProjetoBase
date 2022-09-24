@@ -86,7 +86,7 @@ const Repo = () => {
 
   function atualizaTask(id, Authorization, { description }) {
     const obj = { description, completed: true };
-    console.log("DENTRO ATUALIZA", obj);
+
     const config = { ...configs.put };
 
     config.headers.Authorization = Authorization;

@@ -27,12 +27,8 @@ class TarefasController {
 
     this.tarefasModel = new Proxy(new Tarefas(), {
       get(target, props, receiver) {
-        console.log("intercepta tarefas", target[props]);
-
         if (props === "insereTarefas" && typeof target[props] === "function") {
           return function () {
-            console.log(props);
-
             Reflect.apply(target[props], target, arguments);
 
             TarefaView.insereTarefaFinalizada(
@@ -40,9 +36,11 @@ class TarefasController {
               self.tarefaFinalizada
             );
 
+            self.reloadPage();
+
             TarefaView.montaTarefa(target.tarefas, self.ulTarefasPendentes);
 
-            console.log("intercepta insereTarefas", target[props]);
+            self.reloadPage(500);
           };
         }
 
@@ -52,23 +50,20 @@ class TarefasController {
 
     const usuarioJWT = PegaJWT.getAutorizacaoLogin();
 
-    window.onload = () => {
+    onload = () => {
       if (!usuarioJWT) location = "../index.html";
       else {
         Repository.pegarTasks(usuarioJWT)
           .then((data) => data.json())
           .then((data) => {
-            console.log("pega tarefa", data);
-
-            this.tarefasModel.insereTarefas(data);
-            TarefaView.montaTarefa(
-              this.ordenaTarefa(this.tarefasModel.tarefas),
-              this.ulTarefasPendentes
+            TarefaView.insereTarefaFinalizada(
+              this.ordenaTarefa(data),
+              this.tarefaFinalizada
             );
 
-            TarefaView.insereTarefaFinalizada(
-              this.ordenaTarefa(this.tarefasModel.tarefas),
-              this.tarefaFinalizada
+            TarefaView.montaTarefa(
+              this.ordenaTarefa(data),
+              this.ulTarefasPendentes
             );
           });
       }
@@ -79,31 +74,24 @@ class TarefasController {
       window.location = "../index.html";
     });
 
-    this.ulTarefasPendentes.addEventListener("click", (e) => {
+    DOM.listener(this.ulTarefasPendentes)("click", (e) => {
       const id = e.target.parentElement.dataset.id;
 
       const isClicked = e.target.className === "not-done";
 
-      const itemAtualiza = this.tarefasModel.tarefas.find(
-        (item) => item.id === +id
-      );
-
-      Repository.atualizaTask(id, usuarioJWT, itemAtualiza);
-
       if (isClicked) {
-        console.log(e.target.parentElement);
+        Repository.pegarTasks(usuarioJWT)
+          .then((data) => data.json())
+          .then((data) => {
+            const itemAtualiza = data.find((item) => item.id === +id);
+
+            Repository.atualizaTask(id, usuarioJWT, itemAtualiza);
+          });
 
         Repository.pegarTasks(usuarioJWT)
           .then((data) => data.json())
           .then((data) => {
             this.tarefasModel.insereTarefas(data);
-
-            // TarefaView.insereTarefaFinalizada(
-            //   this.ordenaTarefa(this.tarefasModel.tarefas),
-            //   this.tarefaFinalizada
-            // );
-
-            location.reload(true);
           });
       }
     });
@@ -114,13 +102,9 @@ class TarefasController {
       const isClicked = e.target.className === "not-done";
 
       if (isClicked) {
-        console.log(e.target.parentElement);
-
-        console.log(id);
-
         Repository.deletaTask(id, usuarioJWT);
 
-        location.reload(true);
+        this.reloadPage(500);
       }
     });
 
@@ -130,22 +114,16 @@ class TarefasController {
       })
       .then((data) => {
         TarefaView.showUserName(data, this.nomeUsuario);
-        console.log(data);
       })
       .catch((e) => {
         console.log(e);
       });
 
     DOM.listener(this.botao)("click", (evento) => {
+      evento.preventDefault();
       const novaTarefa = this.inputTarefa;
 
-      Repository.criarTask(usuarioJWT, novaTarefa.value)
-        .then((data) => {
-          return data.json();
-        })
-        .then((data) => {
-          console.log(data);
-        });
+      Repository.criarTask(usuarioJWT, novaTarefa.value);
 
       Repository.pegarTasks(usuarioJWT)
         .then((data) => data.json())
@@ -160,10 +138,10 @@ class TarefasController {
     return tarefas.sort((item1, item2) => item1.id - item2.id);
   }
 
-  finalizaTarefa(id) {
-    document
-      .querySelector(".tarefas-terminadas")
-      .appendChild(document.querySelector(`[data-id="${id}"]`));
+  reloadPage(tempo = 0) {
+    setTimeout(() => {
+      document.location.reload();
+    }, tempo);
   }
 }
 
