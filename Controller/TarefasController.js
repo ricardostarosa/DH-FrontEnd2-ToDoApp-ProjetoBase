@@ -42,8 +42,9 @@ class TarefasController {
 
     const usuarioJWT = PegaJWT.getAutorizacaoLogin();
 
-    if (!usuarioJWT) location = "../index.html";
-    else {
+    if (!usuarioJWT) {
+      location = "../index.html";
+    } else {
       onload = () => {
         Repository.pegarTasks(usuarioJWT)
           .then((data) => data.json())

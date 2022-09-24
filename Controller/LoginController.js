@@ -6,6 +6,8 @@ import LoginRepo from "../Repo/LoginRepo.js";
 
 import SaveStorageLogin from "../Helper/StorageLogin.js";
 
+import { loader, unLoader } from "../animation/loader.js";
+
 const MENSAGEM_ERRO = "Email ou senha incorretos!";
 
 const MENSAGEM_ERRO_SERVIDOR = "Erro servidor!";
@@ -49,7 +51,7 @@ class LoginController {
         password: this.login.senha,
       };
 
-      console.log("loader");
+      loader(botao);
 
       LoginRepo.loginUsuario(dadosLogin)
         .then((data) => {
@@ -61,6 +63,7 @@ class LoginController {
         })
         .catch((e) => {
           this.erro(e.message);
+          unLoader(botao);
         });
     });
 
@@ -112,13 +115,10 @@ class LoginController {
   sucesso(obj, email) {
     SaveStorageLogin.saveLocal(obj, email);
 
-    console.log("tirar loader");
-
     location = "../tarefas.html";
   }
 
   erro(mensagem) {
-    console.log("tirar loader");
     DOM.selector(".right").children[0].textContent = mensagem;
   }
 }

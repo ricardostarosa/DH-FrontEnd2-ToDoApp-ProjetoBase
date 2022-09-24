@@ -5,7 +5,9 @@ import DOM from "../Helper/Helper.js";
 import CadastroRepo from "../Repo/CadastroRepo.js";
 import StorageCadastro from "../Helper/StorageCadastro.js";
 
-class LoginController {
+import { loader, unLoader } from "../animation/loader.js";
+
+class cadastroController {
   constructor() {
     this.input = DOM.selectorAll("input");
     this.botao = DOM.selector("button");
@@ -157,6 +159,8 @@ class LoginController {
         password: elementos.senha.value,
       };
 
+      loader(this.botao);
+
       CadastroRepo.criarUsuario(dadosUsuario)
         .then((data) => {
           if (data.status === 400) {
@@ -170,11 +174,16 @@ class LoginController {
         .then((data) => {
           StorageCadastro.saveLocal(data, dadosUsuario.email);
 
+          setTimeout(() => {
+            location = "../index.html";
+          }, 2000);
+
           console.log(data);
         })
         .catch((e) => {
           DOM.selector(".right").children[0].textContent = e.message;
 
+          unLoader(this.botao);
           this.email.focus();
           console.log("erro", e.message);
         });
@@ -192,4 +201,4 @@ class LoginController {
   }
 }
 
-const loginController = new LoginController();
+const loginController = new cadastroController();
