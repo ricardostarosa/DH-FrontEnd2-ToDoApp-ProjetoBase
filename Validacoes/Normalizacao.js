@@ -33,8 +33,17 @@ class Valida {
     return data1 === data2;
   }
 
+  static checkTaskLength(tarefa) {
+    return /^(?! )[a-z ]{3,50}$/gi.test(tarefa.trim());
+  }
+
   static mensagemErro(objValidacao) {
     const erros = [
+      {
+        tipo: "checaTarefa",
+        valido: this.checkTaskLength,
+        mensagem: "A tarefa de ter no mínimo 5 caracteres.",
+      },
       {
         tipo: "checaNome",
         valido: this.isNameValid,

@@ -1,9 +1,9 @@
 import Login from "../Model/LoginModel.js";
 import Valida from "../Validacoes/Normalizacao.js";
 import LoginView from "../View/LoginView.js";
-import Helper from "../Helper/Helper.js";
-import LoginRepo from "../Repo/LoginRepo.js";
 import DOM from "../Helper/Helper.js";
+import LoginRepo from "../Repo/LoginRepo.js";
+
 import SaveStorageLogin from "../Helper/StorageLogin.js";
 
 const MENSAGEM_ERRO = "Email ou senha incorretos!";
@@ -18,13 +18,13 @@ const objErros = {
 
 class LoginController {
   constructor() {
-    const botao = Helper.selector("button");
+    const botao = DOM.selector("button");
 
-    const form = Helper.selector("form");
+    const form = DOM.selector("form");
 
-    const email = Helper.selector("#inputEmail");
+    const email = DOM.selector("#inputEmail");
 
-    const senha = Helper.selector("#inputPassword");
+    const senha = DOM.selector("#inputPassword");
 
     this.isFieldsValid = [false, false];
 
@@ -35,7 +35,7 @@ class LoginController {
       DOM.selector(".right").children[0].textContent = "";
     });
 
-    Helper.listener(botao)("click", (evento) => {
+    DOM.listener(botao)("click", (evento) => {
       evento.preventDefault();
 
       const elementos = evento.target.parentNode.elements;
@@ -49,6 +49,8 @@ class LoginController {
         password: this.login.senha,
       };
 
+      console.log("loader");
+
       LoginRepo.loginUsuario(dadosLogin)
         .then((data) => {
           if (data.status === 200 || data.status === 201) return data.json();
@@ -56,16 +58,13 @@ class LoginController {
         })
         .then((data) => {
           this.sucesso(data, dadosLogin.email);
-          console.log(data);
         })
         .catch((e) => {
           this.erro(e.message);
-
-          console.log("erro", e.message);
         });
     });
 
-    Helper.listener(email)("keyup", (evento) => {
+    DOM.listener(email)("keyup", (evento) => {
       evento.preventDefault();
 
       const objValidacao = {
@@ -80,11 +79,9 @@ class LoginController {
       this.changeListValidate(Valida.isEmailValid(evento.target.value), 0);
 
       this.releaseButton(Valida.isButtonLock(this.isFieldsValid), botao);
-
-      console.log(this.login);
     });
 
-    Helper.listener(senha)("keyup", (evento) => {
+    DOM.listener(senha)("keyup", (evento) => {
       evento.preventDefault();
 
       const objValidacao = {
@@ -99,8 +96,6 @@ class LoginController {
       this.changeListValidate(Valida.isPasswordValid(evento.target.value), 1);
 
       this.releaseButton(Valida.isButtonLock(this.isFieldsValid), botao);
-
-      console.log(this.isFieldsValid);
     });
   }
 
@@ -117,10 +112,13 @@ class LoginController {
   sucesso(obj, email) {
     SaveStorageLogin.saveLocal(obj, email);
 
+    console.log("tirar loader");
+
     location = "../tarefas.html";
   }
 
   erro(mensagem) {
+    console.log("tirar loader");
     DOM.selector(".right").children[0].textContent = mensagem;
   }
 }

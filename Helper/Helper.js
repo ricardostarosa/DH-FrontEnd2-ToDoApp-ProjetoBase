@@ -18,6 +18,10 @@ class DOM {
   static get class() {
     return document.getElementsByClassName.bind(document);
   }
+
+  static get tag() {
+    return document.getElementsByTagName.bind(document);
+  }
 }
 
 export default DOM;

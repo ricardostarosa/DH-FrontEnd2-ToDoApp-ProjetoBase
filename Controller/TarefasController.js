@@ -3,6 +3,7 @@ import Tarefas from "../Model/TarefasModel.js";
 import TarefaView from "../View/TarefaView.js";
 import PegaJWT from "../Helper/PegaJWT.js";
 import Repository from "../Repo/Repository.js";
+import Valida from "../Validacoes/Normalizacao.js";
 
 class TarefasController {
   constructor() {
@@ -10,7 +11,7 @@ class TarefasController {
 
     this.nomeUsuario = DOM.selector(".user-info").children[0];
 
-    this.botao = DOM.selector("button").children[0];
+    this.botao = DOM.selector("button");
 
     this.inputTarefa = DOM.selector("#novaTarefa");
 
@@ -31,15 +32,6 @@ class TarefasController {
           return function () {
             Reflect.apply(target[props], target, arguments);
 
-            TarefaView.insereTarefaFinalizada(
-              self.ordenaTarefa(target.tarefas),
-              self.tarefaFinalizada
-            );
-
-            self.reloadPage();
-
-            TarefaView.montaTarefa(target.tarefas, self.ulTarefasPendentes);
-
             self.reloadPage(500);
           };
         }
@@ -50,9 +42,9 @@ class TarefasController {
 
     const usuarioJWT = PegaJWT.getAutorizacaoLogin();
 
-    onload = () => {
-      if (!usuarioJWT) location = "../index.html";
-      else {
+    if (!usuarioJWT) location = "../index.html";
+    else {
+      onload = () => {
         Repository.pegarTasks(usuarioJWT)
           .then((data) => data.json())
           .then((data) => {
@@ -60,14 +52,13 @@ class TarefasController {
               this.ordenaTarefa(data),
               this.tarefaFinalizada
             );
-
             TarefaView.montaTarefa(
               this.ordenaTarefa(data),
               this.ulTarefasPendentes
             );
           });
-      }
-    };
+      };
+    }
 
     DOM.listener(this.closeApp)("click", (evento) => {
       PegaJWT.limpaJWT();
@@ -83,9 +74,11 @@ class TarefasController {
         Repository.pegarTasks(usuarioJWT)
           .then((data) => data.json())
           .then((data) => {
-            const itemAtualiza = data.find((item) => item.id === +id);
-
-            Repository.atualizaTask(id, usuarioJWT, itemAtualiza);
+            Repository.atualizaTask(
+              id,
+              usuarioJWT,
+              data.find((item) => item.id === +id)
+            );
           });
 
         Repository.pegarTasks(usuarioJWT)
@@ -119,6 +112,21 @@ class TarefasController {
         console.log(e);
       });
 
+    DOM.listener(this.inputTarefa)("keyup", (evento) => {
+      evento.preventDefault();
+      const novaTarefa = evento.target;
+
+      // const objValidacao = {
+      //   checaTarefa: novaTarefa.value,
+      // };
+
+      const validaCampo = Valida.checkTaskLength(novaTarefa.value);
+
+      if (validaCampo) {
+        this.botao.disabled = false;
+      }
+    });
+
     DOM.listener(this.botao)("click", (evento) => {
       evento.preventDefault();
       const novaTarefa = this.inputTarefa;
@@ -140,7 +148,7 @@ class TarefasController {
 
   reloadPage(tempo = 0) {
     setTimeout(() => {
-      document.location.reload();
+      location.reload();
     }, tempo);
   }
 }
