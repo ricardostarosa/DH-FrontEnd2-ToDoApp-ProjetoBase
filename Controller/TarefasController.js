@@ -5,6 +5,8 @@ import PegaJWT from "../Helper/PegaJWT.js";
 import Repository from "../Repo/Repository.js";
 import Valida from "../Validacoes/Normalizacao.js";
 
+import { loader, loaderUsuario, unLoader } from "../animation/loader.js";
+
 class TarefasController {
   constructor() {
     this.closeApp = DOM.id("closeApp");
@@ -32,6 +34,7 @@ class TarefasController {
           return function () {
             Reflect.apply(target[props], target, arguments);
 
+            loader(self.ulTarefasPendentes);
             self.reloadPage(500);
           };
         }
@@ -46,6 +49,23 @@ class TarefasController {
       location = "../index.html";
     } else {
       onload = () => {
+        loader(this.ulTarefasPendentes);
+
+        loader(this.divTarefasTerminadas);
+
+        loaderUsuario(this.nomeUsuario);
+
+        Repository.getUsuario(usuarioJWT)
+          .then((data) => {
+            return data.json();
+          })
+          .then((data) => {
+            TarefaView.showUserName(data, this.nomeUsuario);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+
         Repository.pegarTasks(usuarioJWT)
           .then((data) => data.json())
           .then((data) => {
@@ -101,17 +121,6 @@ class TarefasController {
         this.reloadPage(500);
       }
     });
-
-    Repository.getUsuario(usuarioJWT)
-      .then((data) => {
-        return data.json();
-      })
-      .then((data) => {
-        TarefaView.showUserName(data, this.nomeUsuario);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
 
     DOM.listener(this.inputTarefa)("keyup", (evento) => {
       evento.preventDefault();
