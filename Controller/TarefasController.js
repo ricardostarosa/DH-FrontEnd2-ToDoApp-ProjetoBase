@@ -5,13 +5,7 @@ import PegaJWT from "../Helper/PegaJWT.js";
 import Repository from "../Repo/Repository.js";
 import Valida from "../Validacoes/Normalizacao.js";
 
-import {
-  loader,
-  loaderUsuario,
-  unLoader,
-  renderizarSkeletons,
-  removerSkeleton,
-} from "../animation/loader.js";
+import { loaderUsuario, renderizarSkeletons } from "../animation/loader.js";
 
 class TarefasController {
   constructor() {
@@ -40,11 +34,6 @@ class TarefasController {
           return function () {
             Reflect.apply(target[props], target, arguments);
 
-            // self.tamanhoTarefasPendentes(usuarioJWT).then((data) => {
-            //   renderizarSkeletons(data, ".tarefas-pendentes");
-
-            //   console.log("tarefas", data);
-            // });
             self.reloadPage(500);
           };
         }
