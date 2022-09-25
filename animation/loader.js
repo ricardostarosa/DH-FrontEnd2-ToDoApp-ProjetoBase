@@ -48,10 +48,22 @@ function removerSkeleton(conteiner) {
   skeletons.forEach((skeleton) => conteinerTarefas.removeChild(skeleton));
 }
 
+function pageLoading(elemento) {
+  const loading = `<div class="container">
+  <div class="dash uno"></div>
+  <div class="dash dos"></div>
+  <div class="dash tres"></div>
+  <div class="dash cuatro"></div>
+</div>`;
+
+  elemento.innerHTML = loading;
+}
+
 export {
   loader,
   unLoader,
   loaderUsuario,
   renderizarSkeletons,
   removerSkeleton,
+  pageLoading,
 };

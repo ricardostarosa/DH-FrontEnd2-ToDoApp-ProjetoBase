@@ -6,7 +6,7 @@ import LoginRepo from "../Repo/LoginRepo.js";
 
 import SaveStorageLogin from "../Helper/StorageLogin.js";
 
-import { loader, unLoader } from "../animation/loader.js";
+import { loader, unLoader, pageLoading } from "../animation/loader.js";
 
 const MENSAGEM_ERRO = "Email ou senha incorretos!";
 
@@ -115,7 +115,11 @@ class LoginController {
   sucesso(obj, email) {
     SaveStorageLogin.saveLocal(obj, email);
 
-    location = "../tarefas.html";
+    pageLoading(document.querySelector("body"));
+
+    setTimeout(() => {
+      location = "../tarefas.html";
+    }, 2000);
   }
 
   erro(mensagem) {
