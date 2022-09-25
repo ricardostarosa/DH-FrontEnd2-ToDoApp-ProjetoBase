@@ -5,7 +5,13 @@ import PegaJWT from "../Helper/PegaJWT.js";
 import Repository from "../Repo/Repository.js";
 import Valida from "../Validacoes/Normalizacao.js";
 
-import { loader, loaderUsuario, unLoader } from "../animation/loader.js";
+import {
+  loader,
+  loaderUsuario,
+  unLoader,
+  renderizarSkeletons,
+  removerSkeleton,
+} from "../animation/loader.js";
 
 class TarefasController {
   constructor() {
@@ -34,7 +40,11 @@ class TarefasController {
           return function () {
             Reflect.apply(target[props], target, arguments);
 
-            loader(self.ulTarefasPendentes);
+            // self.tamanhoTarefasPendentes(usuarioJWT).then((data) => {
+            //   renderizarSkeletons(data, ".tarefas-pendentes");
+
+            //   console.log("tarefas", data);
+            // });
             self.reloadPage(500);
           };
         }
@@ -49,9 +59,17 @@ class TarefasController {
       location = "../index.html";
     } else {
       onload = () => {
-        loader(this.ulTarefasPendentes);
+        this.tamanhoTarefasPendentes(usuarioJWT).then((data) => {
+          renderizarSkeletons(data, ".tarefas-pendentes");
 
-        loader(this.divTarefasTerminadas);
+          console.log("tarefas", data);
+        });
+
+        this.tamanhoTarefasTerminadas(usuarioJWT).then((data) => {
+          renderizarSkeletons(data, ".tarefas-terminadas");
+
+          console.log("tarefas", data);
+        });
 
         loaderUsuario(this.nomeUsuario);
 
@@ -69,14 +87,16 @@ class TarefasController {
         Repository.pegarTasks(usuarioJWT)
           .then((data) => data.json())
           .then((data) => {
-            TarefaView.insereTarefaFinalizada(
-              this.ordenaTarefa(data),
-              this.tarefaFinalizada
-            );
-            TarefaView.montaTarefa(
-              this.ordenaTarefa(data),
-              this.ulTarefasPendentes
-            );
+            setTimeout(() => {
+              TarefaView.insereTarefaFinalizada(
+                this.ordenaTarefa(data),
+                this.tarefaFinalizada
+              );
+              TarefaView.montaTarefa(
+                this.ordenaTarefa(data),
+                this.ulTarefasPendentes
+              );
+            }, 1000);
           });
       };
     }
@@ -160,6 +180,22 @@ class TarefasController {
     setTimeout(() => {
       location.reload();
     }, tempo);
+  }
+
+  async tamanhoTarefasPendentes(jwt) {
+    let tarefas = await Repository.pegarTasks(jwt);
+
+    let resultado = await tarefas.json();
+
+    return resultado.filter((item) => !item.completed).length;
+  }
+
+  async tamanhoTarefasTerminadas(jwt) {
+    let tarefas = await Repository.pegarTasks(jwt);
+
+    let resultado = await tarefas.json();
+
+    return resultado.filter((item) => item.completed).length;
   }
 }
 
